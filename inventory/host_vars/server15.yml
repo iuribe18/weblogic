@@ -1,0 +1,18 @@
+machine:
+  name: BOCC_FM_MCH
+  bank: BOCC
+  app: FM
+  nodemanager:
+    listen_address: "{{ ansible_host }}"
+  server: 
+    name: BOCC_FM_SERVER
+    port: 8001
+    listen_address: "{{ ansible_host }}"
+  filestore:
+    name_prefix: "FS_"
+    path: "/u01/Admin/filestore"
+  jms_server:
+    name_prefix: "JMS_"
+    name_sufix: "JMSModule"
+  saf_agent:
+    name_prefix: "SAF_"

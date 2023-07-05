@@ -1,0 +1,135 @@
+jmss=[
+  {% for jms in domain_jms['modules'] %}
+    {{ jms }},
+  {% endfor %}
+]
+
+servers=[
+  {% for server in domain_hosts %}
+    {{ hostvars[server]['machine'] }},
+  {% endfor %}
+]
+
+connect("{{ domain_spec.username }}","{{ domain_spec.password }}","{{ domain_spec.admin_url }}");
+edit()
+startEdit()
+
+for srv in servers:
+  server = getMBean('/Servers/' + srv['server']['name'])
+  filestore = getMBean('/FileStores/' + srv['filestore']['name_prefix'] + srv['server']['name'])
+  jmsServerName = srv['jms_server']['name_prefix'] + srv['server']['name']
+
+  if (getMBean('/JMSServers/' + jmsServerName)):
+    print 'JMSServer ' + jmsServerName + ' already exists.'
+  else:
+    try:
+      print("Creando jmsserver " + jmsServerName)
+      jmsserver = cmo.createJMSServer(jmsServerName)
+      jmsserver.setPersistentStore(filestore)
+      targets = jmsserver.getTargets()
+      targets.append(server)
+      jmsserver.setTargets(targets)
+      save()
+    except e:
+      print "Ocurrio un error " + e
+      undo('true', 'y')
+      exit('y',2)
+
+for srv in servers:
+  server_mbean = getMBean('/Servers/' + srv['server']['name'])
+  jmsModuleName = srv['bank'] + '_' + srv['app'] + ' ' + srv['jms_server']['name_sufix']
+
+  if (getMBean('/JMSSystemResources/' + jmsModuleName)):
+    print 'JMSModule ' + jmsModuleName + ' already exists.'
+  else:
+    try:
+      print("Creando jmsmodule " + jmsModuleName)
+      jmsModule = cmo.createJMSSystemResource(jmsModuleName)
+      targets = jmsModule.getTargets()
+      targets.append(server_mbean)
+      jmsModule.setTargets(targets)
+      save()
+    except e:
+      print "Ocurrio un error " + e
+      undo('true', 'y')
+      exit('y',2)
+
+for jmsModule in jmss:
+  for srv in servers:
+    if jmsModule['name'] != srv['app']:
+      continue
+    jmsModuleName = srv['bank'] + '_' + srv['app'] + ' ' + srv['jms_server']['name_sufix']
+    try:
+      print jmsModule['resources']['destination_key']['name']
+      if(getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/DestinationKeys/' + jmsModule['resources']['destination_key']['name'])):
+        print 'DestinationKey ' + jmsModule['resources']['destination_key']['name'] + ' already exists.'
+      else: 
+        try:
+          print "Creando DestinationKey para " + jmsModuleName
+          cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName)
+          destination_key_mbean = cmo.createDestinationKey(jmsModule['resources']['destination_key']['name'])
+          destination_key_mbean.setProperty(jmsModule['resources']['destination_key']['property'])
+          destination_key_mbean.setKeyType(jmsModule['resources']['destination_key']['type'])
+          destination_key_mbean.setSortOrder(jmsModule['resources']['destination_key']['order'])
+          save()
+        except e:
+          print "Ocurrio un error " + e
+          undo('true', 'y')
+          exit('y',2)
+    except:
+      print "No hay llave definida"
+
+    for connection_factory in jmsModule['resources']['connection_factories']:
+      if (getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/ConnectionFactories/' + connection_factory['name'])):
+        print 'ConnectionFactory ' + connection_factory['name'] + ' already exists.'
+      else:
+        try:
+          cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName)
+          cf_mbean = cmo.createConnectionFactory(connection_factory['name'])
+          cf_mbean.setJNDIName(connection_factory['jndi'])
+
+          cf_security_params_mbean = getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/ConnectionFactories/' + connection_factory['name'] + '/SecurityParams/' + connection_factory['name'])
+          cf_security_params_mbean.setAttachJMSXUserId(false)
+
+          cf_client_params_mbean = getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/ConnectionFactories/' + connection_factory['name'] + '/ClientParams/' + connection_factory['name'])
+          cf_client_params_mbean.setClientIdPolicy('Restricted')
+          cf_client_params_mbean.setSubscriptionSharingPolicy('Exclusive')
+          cf_client_params_mbean.setMessagesMaximum(10)
+
+          cf_transaction_params_mbean = getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/ConnectionFactories/' + connection_factory['name'] + '/TransactionParams/' + connection_factory['name'])
+          cf_transaction_params_mbean.setXAConnectionFactoryEnabled(true)
+
+          cf_mbean.setDefaultTargetingEnabled(true)
+          save()
+        except e:
+          print "Ocurrio un error " + e
+          undo('true', 'y')
+          exit('y',2)
+
+    for distributed_queue in jmsModule['resources']['distributed_queues']:
+      print distributed_queue
+      if (getMBean('/JMSSystemResources/' + jmsModuleName + '/SubDeployments/' + distributed_queue['subdeployment'])):
+        print 'subdeployment ' + distributed_queue['subdeployment'] + ' already exists.'
+      else:
+        try:
+          jmsserver_mbean = getMBean('/JMSServers/' + srv['jms_server']['name_prefix'] +srv['server']['name'])
+          cd('/JMSSystemResources/' + jmsModuleName)
+          subdeployment_mbean = cmo.createSubDeployment(distributed_queue['subdeployment'])
+          targets = subdeployment_mbean.getTargets()
+          targets.append(jmsserver_mbean)
+          subdeployment_mbean.setTargets(targets)
+          save()
+
+          if (getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/UniformDistributedQueues/' + distributed_queue['name'])):
+            print "distributed queue " + distributed_queue['name'] + " already exists."
+          else:
+            cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName)
+            distributed_queue_mbean = cmo.createUniformDistributedQueue(distributed_queue['name'])
+            distributed_queue_mbean.setJNDIName(distributed_queue['jndi'])
+            distributed_queue_mbean.setSubDeploymentName(distributed_queue['subdeployment'])
+            save()
+        except e:
+          print "Ocurrio un error " + e
+          undo('true', 'y')
+          exit('y',2)
+activate(block='true')

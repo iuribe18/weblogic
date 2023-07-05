@@ -1,0 +1,59 @@
+machines=[
+  {% for server in domain_servers %}
+    {{ hostvars[server]['machine'] }},
+  {% endfor %}
+]
+
+print("Reading Template")
+readTemplate("{{ weblogic.product.home }}/wlserver/common/templates/wls/wls.jar")
+
+
+print('Configuring AdminServer')
+cd('/Servers/AdminServer')
+set('ListenAddress',"{{ adminserver.listen_address }}")
+set('ListenPort', {{ adminserver.listen_port }})
+create('AdminServer','SSL')
+cd('SSL/AdminServer')
+set('Enabled', 'False')
+
+# Security
+print('Creating Password')
+cd('/Security/base_domain/User/{{ domain_spec.username }}')
+cmo.setPassword('{{ domain_spec.password }}')
+
+# print('Setting StartUp Options')
+setOption('ServerStartMode', 'dev')
+
+# Setting the JDK home. Change the path to your installed JDK for weblogic
+setOption('JavaHome','{{ java_home }}')
+setOption('OverwriteDomain', 'true')
+
+# Creating machines
+for mch in machines:
+  print ('Creating domain machines')
+  cd('/')
+  create(mch['name'], 'Machine')
+  print ('Machine created!')
+  cd('/Machines/' + mch['name'])
+  create(mch['name'], 'NodeManager')
+  cd('NodeManager/' + mch['name'])
+  set('ListenAddress', mch['nodemanager']['listen_address'])
+  set('NMType', 'Plain')
+
+# Create Domain to File System
+print('Writing Domain To File System')
+
+# Change the path to your domain accordingly
+writeDomain("{{ domain_spec.home }}/{{ domain_spec.name }}")
+closeTemplate()
+
+# Read the Created Domain
+print('Reading the Domain in offline mode')
+readDomain("{{ domain_spec.home }}/{{ domain_spec.name }}")
+
+print('Finalizing the changes')
+updateDomain()
+closeDomain()
+
+print('Exiting...')
+exit()

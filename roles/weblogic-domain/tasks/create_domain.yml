@@ -1,0 +1,60 @@
+---
+- name: Creando directorio de scripts
+  file:
+    path: "{{ weblogic.product.scripts }}"
+    state: directory
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0755
+
+- name: Copiando scripts de soporte para la creacion del domino 
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ weblogic.product.scripts }}/{{ item.dest }}"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0755
+  loop:
+    - { src: create_domain_adminserver_server.py.j2, dest: create_domain_adminserver_server.py }
+
+- name: Creando dominio
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_domain_adminserver_server.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  when: 
+    - domain_spec.recreate == true
+  register: wlstAdminDomain
+
+- debug: msg={{ wlstAdminDomain.stdout }}
+  when: 
+    - domain_spec.recreate == true
+
+- name: Eliminando template del dominio previo
+  file:
+    path: "{{ weblogic.product.scripts }}/{{ domain_spec.name }}.jar"
+    state: absent
+
+- name: Creando template del dominio
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/pack.sh -domain={{ domain_spec.home }}/{{ domain_spec.name }} -template={{ domain_spec.name }}.jar -template_name=remote_managed -managed=true"
+    chdir: "{{ weblogic.product.scripts }}/"
+  when: 
+    - domain_spec.recreate == true
+  register: packDomain
+
+- debug: msg={{ packDomain.stdout }}
+  when: 
+    - domain_spec.recreate == true
+
+- name: Almacenando localmente el template del dominio
+  fetch:
+    src: "{{ weblogic.product.scripts }}/{{ domain_spec.name }}.jar"
+    dest: temp/{{ domain_spec.name }}.jar
+    flat: true
+

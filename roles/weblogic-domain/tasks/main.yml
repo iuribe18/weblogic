@@ -1,0 +1,20 @@
+---
+- name: Obteniendo el listado de hosts
+  set_fact:
+    server_name: "{{ item }}"
+  with_items:
+    - "{{ ansible_play_hosts_all }}"
+  when: item != 'adminserver'
+  register: all_hosts_hostsvars
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo el nombre de los servers a crear
+  set_fact: domain_servers="{{ all_hosts_hostsvars.results | selectattr('skipped', 'undefined') | map(attribute='ansible_facts.server_name') | list }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Ejecutando tareas para la creacion de dominio
+  import_tasks: create_domain.yml
+  when: 
+    - inventory_hostname == "adminserver"

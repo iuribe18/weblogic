@@ -1,0 +1,47 @@
+---
+- name: Obteniendo el listado de hosts
+  set_fact:
+    server_name: "{{ item }}"
+  with_items:
+    - "{{ ansible_play_hosts_all }}"
+  when: item != 'adminserver'
+  register: all_hosts_hostsvars
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo el nombre de los servers a crear
+  set_fact: domain_servers="{{ all_hosts_hostsvars.results | selectattr('skipped', 'undefined') | map(attribute='ansible_facts.server_name') | list }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo parametros de adminserver
+  set_fact: domain_adminserver="{{ hostvars.adminserver.adminserver }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Copiando scripts para la creacion de servidores
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ weblogic.product.scripts }}/{{ item.dest }}"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0755
+  loop:
+    - { src: create_managed_server.py.j2, dest: create_managed_server.py }
+  delegate_to: adminserver
+  run_once: true
+
+- name: Creando Servers
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_managed_server.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  delegate_to: adminserver
+  run_once: true
+  register: wlstCreateServers
+
+- debug: msg={{ wlstCreateServers.stdout }}
+  delegate_to: adminserver
+  run_once: true

@@ -1,0 +1,14 @@
+### Ansible ###
+*.retry
+roles/weblogic-12c/files/fmw_12.1.3.0.0_wls.jar
+roles/weblogic-12c/files/jdk-7u15-linux-x64.tar.gz
+roles/weblogic-12c/files/jdk-8u201-linux-x64.tar.gz
+
+### Linux ###
+*~
+.fuse_hidden*
+.directoryk
+.Trash-*
+.nfs*
+
+temp/*.jar

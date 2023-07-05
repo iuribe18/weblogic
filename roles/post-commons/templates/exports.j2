@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+{%+ if hostvars['server1'] is defined or hostvars['server2'] is defined or hostvars['server3'] is defined or hostvars['server4'] is defined %}
+/icbs/BBTA/config/ 10.0.0.0/16(rw,sync,no_root_squash,no_subtree_check)
+{% endif %}
+{%+ if hostvars['server5'] is defined or hostvars['server6'] is defined or hostvars['server7'] is defined or hostvars['server8'] is defined %}
+/icbs/BPOP/config/ 10.0.0.0/16(rw,sync,no_root_squash,no_subtree_check)
+{% endif %}
+{%+ if hostvars['server9'] is defined or hostvars['server10'] is defined or hostvars['server11'] is defined or hostvars['server12'] is defined %}
+/icbs/BAVV/config/ 10.0.0.0/16(rw,sync,no_root_squash,no_subtree_check)
+{% endif %}
+{%+ if hostvars['server13'] is defined or hostvars['server14'] is defined or hostvars['server15'] is defined or hostvars['server16'] is defined %}
+/icbs/BOCC/config/ 10.0.0.0/16(rw,sync,no_root_squash,no_subtree_check)
+{% endif %}

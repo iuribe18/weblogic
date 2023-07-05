@@ -1,0 +1,41 @@
+---
+- name: Instalando msttcore-fonts
+  yum:
+    name: "{{ msstcore_fonts }}"
+    state: present
+  when:
+    - inventory_hostname != "adminserver"
+
+- name: export properties
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - inventory_hostname == "adminserver"
+
+- name: Reload exports
+  systemd:
+    name: nfs-server
+    state: restarted
+  when:
+    - inventory_hostname == "adminserver"
+
+- name: Montar NFS
+  mount:
+    src: "{{ hostvars['adminserver']['ansible_host'] }}:/icbs/{{ hostvars[inventory_hostname]['machine']['bank'] }}/config"
+    path: /icbs/config
+    opts: defaults
+    state: mounted
+    fstype: nfs
+  when:
+    - inventory_hostname != "adminserver"
+
+- name: Iniciar servicio nodemanager
+  systemd:
+    name: nodemanager
+    state: started
+  when:
+    - inventory_hostname != "adminserver"

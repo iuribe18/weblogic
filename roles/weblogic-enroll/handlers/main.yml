@@ -1,0 +1,13 @@
+- name: activate_adminconsole
+  wait_for:
+    timeout: 420
+    host: "{{ hostvars.adminserver.ansible_host }}"
+    port: "{{ hostvars.adminserver.adminserver.listen_port }}"
+    state: started
+  delegate_to: adminserver
+  notify: get_adminconsole
+
+- name: get_adminconsole
+  uri: 
+    url: "http://{{ hostvars.adminserver.ansible_host }}:{{ hostvars.adminserver.adminserver.listen_port }}/console"
+    status_code: 301

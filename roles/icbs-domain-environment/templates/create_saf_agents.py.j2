@@ -1,0 +1,39 @@
+servers=[
+  {% for server in domain_hosts %}
+    {{ hostvars[server]['machine'] }},
+  {% endfor %}
+]
+
+connect("{{ domain_spec.username }}","{{ domain_spec.password }}","{{ domain_spec.admin_url }}");
+edit()
+startEdit()
+
+for srv in servers:
+  try:
+    print srv['saf_agent']['name_prefix']
+  except:
+    print "Agente SAF no definido"
+    continue
+    
+  server = getMBean('/Servers/' + srv['server']['name'])
+  filestore = getMBean('/FileStores/' + srv['filestore']['name_prefix'] + srv['server']['name'])
+  safAgentName = srv['saf_agent']['name_prefix'] + srv['server']['name']
+
+  if (getMBean('/SAFAgents/' + safAgentName)):
+    print 'SAFAgent ' + safAgentName + ' already exists.'
+  else:
+    try:
+      print("Creando saf agent " + safAgentName)
+      saf_agent_mbean = cmo.createSAFAgent(safAgentName)
+      saf_agent_mbean.setStore(filestore)
+      saf_agent_mbean.setServiceType('Sending-only')
+      targets = saf_agent_mbean.getTargets()
+      targets.append(server)
+      saf_agent_mbean.setTargets(targets)
+      save()
+    except e:
+      print "Ocurrio un error " + e
+      undo('true', 'y')
+      exit('y',2)
+
+activate(block='true')

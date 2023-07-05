@@ -1,0 +1,10 @@
+---
+- name: Descargando Java
+  get_url:
+    url: http://10.0.0.14:7000/downloads/java/{{ java_version }}
+    dest: /root/{{ java_version }}
+
+- name: Instalando Java
+  yum:
+    name: /root/{{ java_version }}
+    state: present

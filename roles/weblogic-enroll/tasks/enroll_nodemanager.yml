@@ -1,0 +1,51 @@
+---
+- name: Creando directorio de scripts
+  file:
+    path: "{{ weblogic.product.scripts }}"
+    state: directory
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0755
+
+- name: Copiando scripts de soporte para el enrolamiento
+  template:
+    src: enroll_nodemanager.py.j2
+    dest: "{{ weblogic.product.scripts }}/enroll_nodemanager.py"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0755
+
+- name: Copiando template del dominio
+  copy:
+    src: "temp/{{ domain_spec.name }}.jar"
+    dest: "{{ weblogic.product.scripts }}/"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+
+- name: Eliminando dominio en managed server
+  file:
+    path: "{{ domain_spec.home }}/{{ domain_spec.name }}"
+    state: absent
+
+- name: Cargando template del dominio
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/unpack.sh -domain={{ domain_spec.home }}/{{ domain_spec.name }} -template={{ domain_spec.name }}.jar"
+    chdir: "{{ weblogic.product.scripts }}/"
+
+- name: Setear SecureListener a falso en nodemanager.properties
+  replace:
+    path: "{{ domain_spec.home }}/{{ domain_spec.name }}/nodemanager/nodemanager.properties"
+    regexp: '^SecureListener=true$'
+    replace: 'SecureListener=false'
+
+- name: Enrolando nodemanager
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh {{ weblogic.product.scripts }}/enroll_nodemanager.py"
+    chdir: "{{ domain_spec.home }}/{{ domain_spec.name }}/nodemanager/"
+  register: wlstEnrollNodeManager
+
+- debug: msg={{ wlstEnrollNodeManager.stdout }}

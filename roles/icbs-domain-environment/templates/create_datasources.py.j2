@@ -1,0 +1,59 @@
+servers=[
+  {% for server in domain_hosts %}
+    {{ hostvars[server]['machine'] }},
+  {% endfor %}
+]
+
+datasources=[
+  {% for datasource in domain_datasources %}
+    {{ datasource }},
+  {% endfor %}
+]
+
+def remove_duplicates(x):
+  return list(dict.fromkeys(x))
+
+banks = []
+listServers = []
+for srv in servers:
+  listServers.append(srv['server']['name'])
+  banks.append(srv['bank'])
+
+banks = remove_duplicates(banks)
+
+connect("{{ domain_spec.username }}","{{ domain_spec.password }}","{{ domain_spec.admin_url }}");
+edit()
+startEdit()
+
+for dataSource in datasources:
+  for bank in banks:
+    dataSourceName = dataSource['name'] + '-' + bank
+    if getMBean('/JDBCSystemResources/' + dataSourceName):
+      print 'DataSource ' + dataSourceName + ' already exists.'
+    else:
+      print("Creando datasource " + dataSourceName)
+      jdbc_mbean = cmo.createJDBCSystemResource(dataSourceName)
+      url = 'jdbc:oracle:thin:@//' + dataSource['host'] + ':' + str(dataSource['port']) + '/' + dataSource['service']['prefix'] + bank + dataSource['service']['sufix']
+      jdbc_resource_mbean = jdbc_mbean.getJDBCResource()
+      jdbc_resource_mbean.setName(dataSourceName)
+      datasource_params_mbean = jdbc_resource_mbean.getJDBCDataSourceParams()
+      datasource_params_mbean.setJNDINames([dataSource['jndi']])
+      driver_params_mbean = jdbc_resource_mbean.getJDBCDriverParams()
+      driver_params_mbean.setUrl(url)
+      driver_params_mbean.setDriverName('oracle.jdbc.xa.client.OracleXADataSource')
+      driver_params_mbean.setPassword(dataSource['password']['prefix']+bank+dataSource['password']['sufix'])
+      driver_properties = driver_params_mbean.getProperties()
+      if (driver_properties.lookupProperty('user') == None):
+        driver_properties.createProperty('user')
+      user_property = driver_properties.lookupProperty('user')
+      user_property.setValue(dataSource['username']['prefix']+bank+dataSource['username']['sufix'])
+      connectionPoolParams = jdbc_resource_mbean.getJDBCConnectionPoolParams()
+      connectionPoolParams.setTestTableName('SQL ISVALID')
+      connectionPoolParams.setConnectionCreationRetryFrequencySeconds(10)
+      targets = jdbc_mbean.getTargets()
+      for srv in listServers:
+        if bank in srv:
+          cluster_mbean = getMBean('/Servers/' + srv)
+          jdbc_mbean.addTarget(cluster_mbean)
+save()
+activate(block='true')

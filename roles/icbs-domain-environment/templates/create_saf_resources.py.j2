@@ -1,0 +1,99 @@
+safQueues=[
+  {% for saf in domain_jms['modules'] %}
+    {{ saf }},
+  {% endfor %}
+]
+
+servers=[
+  {% for server in domain_hosts %}
+    {{ hostvars[server]['machine'] }},
+  {% endfor %}
+]
+
+connect("{{ domain_spec.username }}","{{ domain_spec.password }}","{{ domain_spec.admin_url }}");
+edit()
+startEdit()
+
+for jmsModule in safQueues:
+  for srv in servers:
+    if jmsModule['name'] != srv['app']:
+      continue
+    jmsModuleName = srv['bank'] + '_' + srv['app'] + ' ' + srv['jms_server']['name_sufix']
+    try:
+      print jmsModule['resources']['saf']['error_handling']['name']
+    except:
+      print "SAF no definido"
+      continue
+    if(getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFErrorHandlings/' + jmsModule['resources']['saf']['error_handling']['name'])):
+      error_handling_mbean = getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFErrorHandlings/' + jmsModule['resources']['saf']['error_handling']['name'])
+      print 'SAF Error Handling ' + jmsModule['resources']['saf']['error_handling']['name'] + ' already exists.'
+    else:
+      try:
+        cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName)
+        error_handling_mbean = cmo.createSAFErrorHandling(jmsModule['resources']['saf']['error_handling']['name'])
+        error_handling_mbean.setPolicy(jmsModule['resources']['saf']['error_handling']['policy'])
+        error_handling_mbean.setSAFErrorDestination(None)
+        error_handling_mbean.setLogFormat(None)
+      except e:
+        print "Ocurrio un error " + e
+        undo('true', 'y')
+        exit('y',2) 
+
+    for remote_context in jmsModule['resources']['saf']['remote_contexts']:
+      if (getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFRemoteContexts/' + remote_context['name'])):
+        remote_ctx_mbean = getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFRemoteContexts/' + remote_context['name'])
+        print 'Remote context ' + remote_context['name'] + ' already exists.'
+      else:
+        try:
+          cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName)
+          remote_ctx_mbean = cmo.createSAFRemoteContext(remote_context['name'])
+          remote_ctx_login_ctx_mbean = remote_ctx_mbean.getSAFLoginContext()
+          try:
+            remoteUrl = remote_context['bank'][srv['bank'].lower()]['url']
+          except:
+            remoteUrl = 't3://0.0.0.0:8001'
+          remote_ctx_login_ctx_mbean.setLoginURL(remoteUrl)
+          remote_ctx_login_ctx_mbean.setUsername(remote_context['username'])
+          remote_ctx_login_ctx_mbean.setPassword(remote_context['password'])
+          save()
+        except e:
+          print "Ocurrio un error " + e
+          undo('true', 'y')
+          exit('y',2)
+
+      for imported_destination in remote_context['imported_destinations']:
+        if (getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFImportedDestinations/' + imported_destination['name'])):
+          imported_destination_mbean = getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFImportedDestinations/' + imported_destination['name'])
+          print 'Imported Destination ' + imported_destination['name'] + ' already exists.'
+        else:
+          try:
+            cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName)
+            imported_destination_mbean = cmo.createSAFImportedDestinations(imported_destination['name'])
+            imported_destination_mbean.setJNDIPrefix(None)
+            imported_destination_mbean.setSAFRemoteContext(remote_ctx_mbean)
+            imported_destination_mbean.setSAFErrorHandling(error_handling_mbean)
+            imported_destination_mbean.setTimeToLiveDefault(3600000)
+            imported_destination_mbean.setUseSAFTimeToLiveDefault(false)
+            imported_destination_mbean.setDefaultTargetingEnabled(true)
+            save()
+          except e:
+            print "Ocurrio un error " + e
+            undo('true', 'y')
+            exit('y',2)
+
+        for saf_queue in imported_destination['queues']:
+          if (getMBean('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFImportedDestinations/' + imported_destination['name'] + '/SAFQueues/' + saf_queue['name'])):
+            print 'SAF Queue ' + saf_queue['name'] + ' already exists.'
+          else:
+            try:
+              cd('/JMSSystemResources/' + jmsModuleName + '/JMSResource/' + jmsModuleName + '/SAFImportedDestinations/' + imported_destination['name']) 
+              saf_queue_mbean = cmo.createSAFQueue(saf_queue['name'])
+              saf_queue_mbean.setRemoteJNDIName(saf_queue['jndi'])
+              saf_queue_mbean.setLocalJNDIName(saf_queue['jndi'])
+              saf_queue_mbean.setPersistentQos('At-Least-Once')
+              save()
+            except e:
+              print "Ocurrio un error " + e
+              undo('true', 'y')
+              exit('y',2)
+activate(block='true')

@@ -1,0 +1,1 @@
+Este directorio temporal es necesario para descargar el template del dominio creado en el adminserver mediante el script pack.sh para luego transmitirlo a los hosts restantes para la creacion del dominio para el enrolamiento.

@@ -1,0 +1,32 @@
+hosts=[
+  {% for host in domain_hosts %}
+    {{ hostvars[host]['machine'] }},
+  {% endfor %}
+]
+
+connect("{{ domain_spec.username }}","{{ domain_spec.password }}","{{ domain_spec.admin_url }}");
+edit()
+startEdit()
+
+for host in hosts:
+  filestoreName = host['filestore']['name_prefix'] + host['server']['name']
+  if (getMBean('/FileStores/' + filestoreName)):
+    print 'Filestore ' + filestoreName + ' already exists.'
+  else:
+    try:
+      print("Creando filestore " + filestoreName)
+      server = getMBean('/Servers/' + host['server']['name'])
+      filestore = cmo.createFileStore(filestoreName)
+      filestore.setDirectory( host['filestore']['path'])
+      targets = filestore.getTargets()
+      targets.append(server)
+      filestore.setTargets(targets)
+    except e:
+      print "Ocurrio un error"
+      print e
+      undo('true', 'y')
+      exit('y',2)
+
+showChanges()
+save()
+activate(block='true')

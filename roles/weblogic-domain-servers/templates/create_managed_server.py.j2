@@ -1,0 +1,37 @@
+servers=[
+  {% for server in domain_servers %}
+    {{ hostvars[server]['machine'] }},
+  {% endfor %}
+]
+
+connect("{{ domain_spec.username }}","{{ domain_spec.password }}","{{ domain_spec.admin_url }}");
+
+# for srv in servers:
+#   if (getMBean('/Servers/' + srv['server']['cluster']) == None):
+#     print("ERROR: No se ha encontrado el Cluster " + srv['server']['cluster'])
+#     exit(exitcode=2)
+
+edit()
+startEdit()
+
+for srv in servers:
+  if (getMBean('/Servers/' + srv['server']['name'])):
+    print 'Server ' + srv['server']['name'] + ' already exists.'
+    cancelEdit('y')
+    exit()
+  else:
+    cd('/')
+    print("Creando servidor " + srv['server']['name'])
+    server = create(srv['server']['name'], 'Server')
+    server.setListenPort(srv['server']['port'])
+    server.setListenAddress(srv['server']['listen_address'])
+    server.setMachine(getMBean('/Machines/' + srv['name']))
+
+    # Server arguments
+    server_args = getMBean('/Servers/' + srv['server']['name'] + '/ServerStart/' + srv['server']['name'])
+    server_args.setClassPath("{{ java_home }}/jre/lib/rt.jar:{{ weblogic.product.home }}/server/lib/weblogic_es.jar:{{ java_home }}/lib/tools.jar:/icbs/config")
+    server_args.setArguments('-server -Xms2048m -Xmx2048m -XX:CompileThreshold=8000 -DANTLR_USE_DIRECT_CLASS_LOADING=true -cp {{ weblogic.product.home }}/wlserver/server/lib/weblogic-launcher.jar -Dlaunch.use.env.classpath=true -Dweblogic.Name='+ srv['server']['name'] +' -Djava.security.policy={{ weblogic.product.home }}/wlserver/server/lib/weblogic.policy -Djava.system.class.loader=com.oracle.classloader.weblogic.LaunchClassLoader -Dweblogic.ReverseDNSAllowed=false -Dwls.home={{ weblogic.product.home }}/wlserver/server -Dweblogic.home={{ weblogic.product.home }}/wlserver/server -Dicbs_config_dir=/icbs/config/crypto/ -DEXCELSYS_CRYPTO_UTIL_KEY=123momia -Dweblogic.security.allowCryptoJDefaultJCEVerification=true -Dweblogic.jndi.WLContext.ALLOW_GLOBAL_RESOURCE_LOOKUP=true -Dweblogic.management.server=http://{{ domain_adminserver.listen_address }}:{{ domain_adminserver.listen_port }}')
+    
+showChanges()
+save()
+activate(block='true')

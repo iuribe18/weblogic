@@ -1,0 +1,165 @@
+---
+- name: Obteniendo el listado de hosts
+  set_fact:
+    server_name: "{{ item }}"
+  with_items:
+    - "{{ ansible_play_hosts_all }}"
+  when: item != 'adminserver'
+  register: all_hosts_hostsvars
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo el nombre de los servers a utilizar como targets
+  set_fact: domain_hosts="{{ all_hosts_hostsvars.results | selectattr('skipped', 'undefined') | map(attribute='ansible_facts.server_name') | list }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo parametros de adminserver
+  set_fact: domain_adminserver="{{ hostvars.adminserver.adminserver }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo parametros de jms
+  set_fact: domain_jms="{{ domain_spec.jms }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Resolviendo parametros de datasources
+  set_fact: domain_datasources="{{ domain_spec.datasources }}"
+  delegate_to: adminserver
+  run_once: true 
+
+- name: Copiando scripts para la creacion de recursos
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ weblogic.product.scripts }}/{{ item.dest }}"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0755
+  loop:
+    - { src: create_datasources.py.j2, dest: create_datasources.py }
+    - { src: create_filestores.py.j2, dest: create_filestores.py }
+    - { src: create_messaging.py.j2, dest: create_messaging.py }
+    - { src: create_saf_agents.py.j2, dest: create_saf_agents.py }
+    - { src: create_saf_resources.py.j2, dest: create_saf_resources.py }
+  delegate_to: adminserver
+  run_once: true
+
+- name: Creando Datasources
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_datasources.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  delegate_to: adminserver
+  run_once: true
+  register: wlstCreateDatasources
+
+- debug: msg={{ wlstCreateDatasources.stdout }}
+  delegate_to: adminserver
+  run_once: true
+
+- name: Creando FileStores
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_filestores.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  delegate_to: adminserver
+  run_once: true
+  register: wlstCreateFileStores
+
+- debug: msg={{ wlstCreateFileStores.stdout }}
+  delegate_to: adminserver
+  run_once: true
+
+- name: Creando Agente SAF
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_saf_agents.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  delegate_to: adminserver
+  run_once: true
+  register: wlstCreateSaf
+
+- debug: msg={{ wlstCreateSaf.stdout }}
+  delegate_to: adminserver
+  run_once: true
+
+- name: Creando JMSServers/JMSModules
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_messaging.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  delegate_to: adminserver
+  run_once: true
+  register: wlstCreateMessaging
+
+- debug: msg={{ wlstCreateMessaging.stdout }}
+  delegate_to: adminserver
+  run_once: true
+
+- name: Creando Colas SAF
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell:
+    cmd: "{{ weblogic.product.home }}/oracle_common/common/bin/wlst.sh create_saf_resources.py"
+    chdir: "{{ weblogic.product.scripts }}/"
+  delegate_to: adminserver
+  run_once: true
+  register: wlstCreateColaSaf
+
+- debug: msg={{ wlstCreateColaSaf.stdout }}
+  delegate_to: adminserver
+  run_once: true
+
+# - name: ansible create multiple directory example
+#   file:
+#     path: "{{ item }}"
+#     state: directory
+#     owner: "{{ weblogic.system.user.name }}"
+#     group: "{{ weblogic.system.user.group }}"
+#     mode: 0755
+#   with_items:
+#     - /icbs/
+#     - /icbs/config
+#     - /icbs/config/antiphishing
+#     - /icbs/config/crypto
+#     - /icbs/config/properties
+#     - /icbs/data/
+#     - /icbs/data/archivos/
+#     - /icbs/data/archivos/entrada
+#     - /icbs/data/archivos/entradaSolicitud
+#     - /icbs/data/archivos/salida
+#     - /icbs/data/archivosATH
+#     - /icbs/data/archivosATH/salida
+#     - /icbs/data/archivosICBS
+#     - /icbs/data/archivosICBS/entrada
+
+
+# - name: Copiando imagenes antiphishing
+#   synchronize:
+#     src: roles/icbs-domain-environment/files/antiphishing-images-files/{{ item }}/
+#     dest: /icbs/config/antiphishing/
+#   with_items:
+#   - BAVV
+#   - BBTA
+#   - BOCC
+#   - BPOP
+  
+# - name: Copiando crypto pgp
+#   synchronize:
+#     src: roles/icbs-domain-environment/files/icbs-fm-pgp/
+#     dest: /icbs/config/crypto/
+  
+# - name: Copiando icbs-properties
+#   synchronize:
+#     src: roles/icbs-domain-environment/files/icbs-properties/src/main/resources/
+#     dest: /icbs/config/properties/

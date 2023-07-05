@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: infra@solem.cl
+  description: Rol para el enrolamiento de nodemanagers a un dominio weblogic
+  company: Ingenieria Solem S.A.
+  min_ansible_version: 2.7
+  platforms:
+    - name: Centos
+      versions:
+        - 7
+
+dependencies:
+  - role: weblogic-domain
+    when: False
+
+allow_duplicates: False
+

@@ -1,0 +1,14 @@
+[Unit]
+Description=Controls Weblogic nodemanager Process
+After=network.target sshd.service
+           
+[Service]
+Type=simple
+User={{ weblogic.system.user.name }}
+Group={{ weblogic.system.user.group }}
+Restart=on-failure
+ExecStart={{ domain_spec.home }}/{{ domain_spec.name }}/bin/startNodeManager.sh
+ExecStop={{ domain_spec.home }}/{{ domain_spec.name }}/bin/stopNodeManager.sh
+
+[Install]
+WantedBy=multi-user.target

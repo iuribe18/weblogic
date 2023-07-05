@@ -1,0 +1,3 @@
+adminserver:
+  listen_address: "{{ hostvars.adminserver.ansible_host }}"
+  listen_port: 8001

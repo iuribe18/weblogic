@@ -1,0 +1,9 @@
+galaxy_info:
+  author: infra@solem.cl
+  description: Rol para la instalacion base de Weblogic
+  company: Ingenieria Solem S.A.
+  min_ansible_version: 2.9
+  platforms:
+    - name: Centos
+      versions:
+        - 7

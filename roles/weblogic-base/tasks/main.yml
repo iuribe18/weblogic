@@ -1,0 +1,12 @@
+---
+- stat:
+    path: "{{ weblogic.product.home }}/inventory/registry.xml"
+  register: product_inventory
+
+- name: Preparando la instalacion de weblogic
+  import_tasks: install_weblogic.yml
+  when: 
+    - product_inventory.stat.exists == False
+
+
+    

@@ -1,0 +1,17 @@
+---
+- debug: msg="{{ hostvars.adminserver }}"
+
+- name: Iniciando adminserver
+  remote_user: "{{ weblogic.system.user.name }}"
+  shell:
+    cmd: nohup {{domain_spec.home}}/{{domain_spec.name}}/bin/startWebLogic.sh >> {{domain_spec.home}}/{{domain_spec.name}}/servers/AdminServer/AdminServer.out 2>&1 &
+  delegate_to: adminserver
+  run_once: true
+  notify: activate_adminconsole
+  when: 
+    - inventory_hostname == "adminserver"
+
+- name: Ejecutando tareas para el enrolamiento de nodemanager
+  import_tasks: enroll_nodemanager.yml
+  when: 
+    - inventory_hostname != "adminserver"

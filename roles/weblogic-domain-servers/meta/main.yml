@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: infra@solem.cl
+  description: Rol para la creacion de servidores en dominio weblogic
+  company: Ingenieria Solem S.A.
+  min_ansible_version: 2.7
+  platforms:
+    - name: Centos
+      versions:
+        - 7
+
+dependencies:
+  - role: weblogic-enroll
+    when: False

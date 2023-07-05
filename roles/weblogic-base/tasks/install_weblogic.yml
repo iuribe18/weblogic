@@ -1,0 +1,53 @@
+---
+- name: Creando estructura de directorios
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0775
+  loop:
+    - "{{ weblogic.product.home }}"
+    - "{{ weblogic.product.support }}"
+
+- name: Copiando archivos de soporte de instalación
+  template:
+    src: "{{ item }}"
+    dest: "{{ weblogic.product.support }}"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0750
+  loop:
+   - wls.rsp
+   - oraInst.loc
+
+#- name: Transfiriendo el instalador
+#  copy:
+#    src: files/{{ weblogic.product.installer }}
+#    dest: "{{ weblogic.product.support }}/"
+#    owner: "{{ weblogic.system.user.name }}"
+#    group: "{{ weblogic.system.user.group }}"
+#    mode: 0754
+#  when: weblogic.product.installer_location == "local"
+
+- name: Descargando el instalador
+  get_url: 
+    url: "{{ weblogic.product.installer_location }}"
+    dest: "{{ weblogic.product.support }}/"
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0754
+
+- name: Iniciando instalacion base
+  become: true
+  become_user: "{{ weblogic.system.user.name }}"
+  become_method: su
+  shell: |
+    {{ java_home }}/bin/java -jar {{ weblogic.product.installer }} -silent -responseFile {{ weblogic.product.support }}/wls.rsp -invPtrLoc {{ weblogic.product.support }}/oraInst.loc
+  args:
+    chdir: "{{ weblogic.product.support }}"
+    executable: /bin/bash
+    creates: "{{ weblogic.product.home }}/inventory/registry.xml"
+  register: wl_install_result
+
+- debug: msg={{ wl_install_result.stdout }}
