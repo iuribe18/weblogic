@@ -6,7 +6,4 @@
 - name: Preparando la instalacion de weblogic
   import_tasks: install_weblogic.yml
   when: 
-    - product_inventory.stat.exists == False
-
-
-    
+    - product_inventory.stat.exists == False    
