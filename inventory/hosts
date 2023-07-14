@@ -1,29 +1,8 @@
 [qa_supp]
-adminserver ansible_host=10.0.0.243
+adminserver ansible_host=10.0.0.18
 #server1 ansible_host=10.0.2.47 FO
 #server2 ansible_host=10.0.2.48 BO
 #server3 ansible_host=10.0.2.45 FM
 #server4 ansible_host=10.0.2.46 OP
 
-server1 ansible_host=10.0.0.134
-server2 ansible_host=10.0.0.135
-server3 ansible_host=10.0.0.137
-server4 ansible_host=10.0.0.138
-server5 ansible_host=10.0.0.142
-server6 ansible_host=10.0.0.102
-server7 ansible_host=10.0.0.113
-server8 ansible_host=10.0.0.114
-server9 ansible_host=10.0.0.102
-server10 ansible_host=10.0.0.115
-server11 ansible_host=10.0.0.121
-server12 ansible_host=10.0.0.147
-server13 ansible_host=10.0.0.148
-server14 ansible_host=10.0.0.149
-server15 ansible_host=10.0.0.147
-server16 ansible_host=10.0.0.150
-server17 ansible_host=10.0.0.122
-server18 ansible_host=10.0.0.126
-server19 ansible_host=10.0.0.127
-server20 ansible_host=10.0.0.122
-server21 ansible_host=10.0.0.128
-server22 ansible_host=10.0.0.132
+server1 ansible_host=10.0.0.18
