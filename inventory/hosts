@@ -5,4 +5,4 @@ adminserver ansible_host=10.0.0.18
 #server3 ansible_host=10.0.2.45 FM
 #server4 ansible_host=10.0.2.46 OP
 
-server1 ansible_host=10.0.0.18
+#server1 ansible_host=10.0.0.18
