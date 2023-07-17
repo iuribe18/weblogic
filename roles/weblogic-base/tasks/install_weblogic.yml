@@ -30,9 +30,17 @@
 #    mode: 0754
 #  when: weblogic.product.installer_location == "local"
 
-- name: Descargando el instalador
-  get_url: 
-    url: "{{ weblogic.product.installer_location }}"
+# - name: Descargando el instalador
+#   get_url: 
+#     url: "{{ weblogic.product.installer_location }}"
+#     dest: "{{ weblogic.product.support }}/"
+#     owner: "{{ weblogic.system.user.name }}"
+#     group: "{{ weblogic.system.user.group }}"
+#     mode: 0754
+
+- name: Descargando el instalador de Java
+  copy:
+    src: /home/osboxes/Documentos/ansible/{{ java_version }}
     dest: "{{ weblogic.product.support }}/"
     owner: "{{ weblogic.system.user.name }}"
     group: "{{ weblogic.system.user.group }}"
