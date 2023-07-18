@@ -57,4 +57,3 @@
     src: "{{ weblogic.product.scripts }}/{{ domain_spec.name }}.jar"
     dest: temp/{{ domain_spec.name }}.jar
     flat: true
-

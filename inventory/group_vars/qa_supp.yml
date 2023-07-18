@@ -6,6 +6,7 @@ ansible_user: oracle
 # La version (java_version) debe existir en el fileserver en la ruta http://10.0.0.14:7000/downloads/java/
 java_home: /usr/java/latest
 java_version: jdk-8u331-linux-x64.rpm
+weblogic_version: fmw_12.1.3.0.0_wls.jar
 
 #java_home: /u01/Middleware/P_JAVA_ICBS/java_1.8
 
@@ -32,406 +33,406 @@ domain_spec:
   username: weblogic
   password: P@ssw0rd
   recreate: true
-  admin_url: t3://192.168.1.21:7001
-  # datasources:
-  #   - name: excelsysdb
-  #     jndi: jdbc/excelsysdb
-  #     host: 10.0.0.95
-  #     port: 1521
-  #     service:
-  #       prefix: ''
-  #       sufix: _TX
-  #     username:
-  #       prefix: ICBS
-  #       sufix: _EC78
-  #     password:
-  #       prefix: ICBS
-  #       sufix: _EC78
-    # - name: icbsdb
-    #   jndi: jdbc/icbsdb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    # - name: icbsLoggerdb
-    #   jndi: jdbc/icbsLoggerdb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    # - name: excelsysLoggerdb
-    #   jndi: jdbc/excelsysLoggerdb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    # - name: excelsysLoggerHistorydb
-    #   jndi: jdbc/excelsysLoggerHistorydb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    # - name: excelsysQuartzdb
-    #   jndi: jdbc/excelsysQuartzdb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    # - name: icbsLoggerHistorydb
-    #   jndi: jdbc/icbsLoggerHistorydb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    # - name: LoggerTJndiDataSource
-    #   jndi: jdbc/excelsysLoggerTdb
-    #   host: 10.0.0.95
-    #   port: 1521
-    #   service:
-    #     prefix: ''
-    #     sufix: _TX
-    #   username:
-    #     prefix: ICBS
-    #     sufix: _EC78
-    #   password:
-    #     prefix: ICBS
-    #     sufix: _EC78
-  # jms:
-  #   modules:
-  #     - name: FO
-  #       resources:
-  #         destination_key:
-  #           name: LoggerDestinationKey
-  #           property: JMSPriority
-  #           type: Int
-  #           order: Ascending
-  #         connection_factories:
-  #           - name: TheConnectionFactory
-  #             jndi: jms/TheConnectionFactory
-  #           - name: IcbsAlertConnectionFactory
-  #             jndi: jms/IcbsAlertConnectionFactory
-  #           - name: IcbsNotificationConnectionFactory
-  #             jndi: jms/IcbsNotificationConnectionFactory
-  #           - name: IcbsTransactionReverseConnectionFactory
-  #             jndi: jms/IcbsTransactionReverseConnectionFactory
-  #           - name: IcbsTransactionTimeoutRetryConnectionFactory
-  #             jndi: jms/IcbsTransactionTimeoutRetryConnectionFactory
-  #           - name: RequestedFileConnectionFactory
-  #             jndi: jms/RequestedFileConnectionFactory
-  #           - name: AsyncProccConnectionFactory
-  #             jndi: jms/AsyncProccConnectionFactory
-  #           - name: IcbsDispersionFundsFactory
-  #             jndi: jms/IcbsDispersionFundsFactory
-  #           - name: RequestedSyncFileConnectionFactory
-  #             jndi: jms/RequestedSyncFileConnectionFactory
-  #           - name: AuthTxConnectionFactory
-  #             jndi: jms/AuthTxConnectionFactory
-  #         distributed_queues:
-  #           - name: PackageReceivedQueue
-  #             jndi: jms/PackageReceivedQueue
-  #             subdeployment: PackageReceivedQueue
-  #           - name: IcbsAlertQueue
-  #             jndi: jms/IcbsAlertQueue
-  #             subdeployment: IcbsAlertQueue
-  #           - name: fileManagerQueue
-  #             jndi: jms/fileManagerQueue
-  #             subdeployment: fileManagerQueue
-  #           - name: IcbsNotificationQueue
-  #             jndi: jms/IcbsNotificationQueue
-  #             subdeployment: IcbsNotificationQueue
-  #           - name: requestedFileQueue
-  #             jndi: jms/requestedFileQueue
-  #             subdeployment: requestedFileQueue
-  #           - name: IcbsTransactionReverseQueue
-  #             jndi: jms/IcbsTransactionReverseQueue
-  #             subdeployment: IcbsTransactionReverseQueue
-  #           - name: IcbsTransactionTimeoutRetryQueue
-  #             jndi: jms/IcbsTransactionTimeoutRetryQueue
-  #             subdeployment: IcbsTransactionTimeoutRetryQueue
-  #           - name: SendFileToHostQueue
-  #             jndi: jms/SendFileToHostQueue
-  #             subdeployment: SendFileToHostQueue
-  #           - name: AsyncProccQueue
-  #             jndi: jms/AsyncProccQueue
-  #             subdeployment: AsyncProccQueue
-  #           - name: SendProductsDispersionFundsQueue
-  #             jndi: jms/SendProductsDispersionFundsQueue
-  #             subdeployment: SendProductsDispersionFundsQueue
-  #           - name: loggerTX_T
-  #             jndi: jms/PackageReceivedQueueT
-  #             subdeployment: loggerTX_T
-  #           - name: authTxQueue
-  #             jndi: jms/authTxQueue
-  #             subdeployment: authTxQueue
-          # saf:
-          #   error_handling:
-          #     name: SAF_ICBS_Error_Handling
-          #     policy: Always-Forward
-          #   remote_contexts:
-          #     - name: SAF_ICBS_FM_Remote_Context
-          #       bank:
-          #         bbta:
-          #           url: t3://10.0.2.45:8001
-          #         bpop:
-          #           url: t3://localhost:8001
-          #         bavv:
-          #           url: t3://localhost:8001
-          #         bocc:
-          #           url: t3://localhost:8001
-          #       username: weblogic
-          #       password: P@ssw0rd
-          #       imported_destinations:
-          #         - name: SAF_ICBS_FM_Imported_Destination
-          #           queues:
-          #             - name: dataStorageQueue
-          #               jndi: jms/dataStorageQueue
-          #     - name: SAF_ICBS_OP_Remote_Context
-          #       bank:
-          #         bbta:
-          #           url: t3://10.0.2.46:8001
-          #         bpop:
-          #           url: t3://localhost:8001
-          #         bavv:
-          #           url: t3://localhost:8001
-          #         bocc:
-          #           url: t3://localhost:8001
-          #       username: weblogic 
-          #       password: P@ssw0rd
-          #       imported_destinations:
-          #         - name: SAF_ICBS_OP_Imported_Destination
-          #           queues:
-          #             - name: IcbsTransactionReverseQueue
-          #               jndi: jms/IcbsTransactionReverseQueue
-          #             - name: requestedSyncFileQueue
-          #               jndi: jms/requestedSyncFileQueue
-      # - name: BO
-      #   resources:
-      #     destination_key:
-      #       name: LoggerDestinationKey
-      #       property: JMSPriority
-      #       type: Int
-      #       order: Ascending
-      #     connection_factories:
-      #       - name: TheConnectionFactory
-      #         jndi: jms/TheConnectionFactory
-      #       - name: IcbsAlertConnectionFactory
-      #         jndi: jms/IcbsAlertConnectionFactory
-      #       - name: IcbsNotificationConnectionFactory
-      #         jndi: jms/IcbsNotificationConnectionFactory
-      #       - name: IcbsTransactionReverseConnectionFactory
-      #         jndi: jms/IcbsTransactionReverseConnectionFactory
-      #       - name: RequestedFileConnectionFactory
-      #         jndi: jms/RequestedFileConnectionFactory
-      #       - name: IcbsDispersionFundsFactory
-      #         jndi: jms/IcbsDispersionFundsFactory
-      #       - name: AsyncProccConnectionFactory
-      #         jndi: jms/AsyncProccConnectionFactory
-      #       - name: AuthTxConnectionFactory
-      #         jndi: jms/AuthTxConnectionFactory
-      #     distributed_queues:
-      #       - name: PackageReceivedQueue
-      #         jndi: jms/PackageReceivedQueue
-      #         subdeployment: PackageReceivedQueue
-      #       - name: IcbsAlertQueue
-      #         jndi: jms/IcbsAlertQueue
-      #         subdeployment: IcbsAlertQueue
-      #       - name: fileManagerQueue
-      #         jndi: jms/fileManagerQueue
-      #         subdeployment: fileManagerQueue
-      #       - name: IcbsNotificationQueue
-      #         jndi: jms/IcbsNotificationQueue
-      #         subdeployment: IcbsNotificationQueue
-      #       - name: requestedFileQueue
-      #         jndi: jms/requestedFileQueue
-      #         subdeployment: requestedFileQueue
-      #       - name: dataStorageQueue
-      #         jndi: jms/dataStorageQueue
-      #         subdeployment: dataStorageQueue
-      #       - name: IcbsTransactionReverseQueue
-      #         jndi: jms/IcbsTransactionReverseQueue
-      #         subdeployment: IcbsTransactionReverseQueue
-      #       - name: SendProductsDispersionFundsQueue
-      #         jndi: jms/SendProductsDispersionFundsQueue
-      #         subdeployment: SendProductsDispersionFundsQueue
-      #       - name: AsyncProccQueue
-      #         jndi: jms/AsyncProccQueue
-      #         subdeployment: AsyncProccQueue
-      #       - name: loggerTX_T
-      #         jndi: jms/PackageReceivedQueueT
-      #         subdeployment: loggerTX_T
-      #       - name: authTxQueue
-      #         jndi: jms/authTxQueue
-      #         subdeployment: authTxQueue
-      # - name: FM
-      #   resources:
-      #     connection_factories:
-      #       - name: TheConnectionFactory
-      #         jndi: jms/TheConnectionFactory
-      #       - name: IcbsAlertConnectionFactory
-      #         jndi: jms/IcbsAlertConnectionFactory
-      #       - name: IcbsNotificationConnectionFactory
-      #         jndi: jms/IcbsNotificationConnectionFactory
-      #       - name: IcbsTransactionReverseConnectionFactory
-      #         jndi: jms/IcbsTransactionReverseConnectionFactory
-      #       - name: RequestedFileConnectionFactory
-      #         jndi: jms/RequestedFileConnectionFactory
-      #       - name: AsyncProccConnectionFactory
-      #         jndi: jms/AsyncProccConnectionFactory
-      #       - name: AuthTxConnectionFactory
-      #         jndi: jms/AuthTxConnectionFactory
-      #     distributed_queues:
-      #       - name: PackageReceivedQueue
-      #         jndi: jms/PackageReceivedQueue
-      #         subdeployment: PackageReceivedQueue
-      #       - name: IcbsAlertQueue
-      #         jndi: jms/IcbsAlertQueue
-      #         subdeployment: IcbsAlertQueue
-      #       - name: fileManagerQueue
-      #         jndi: jms/fileManagerQueue
-      #         subdeployment: fileManagerQueue
-      #       - name: IcbsNotificationQueue
-      #         jndi: jms/IcbsNotificationQueue
-      #         subdeployment: IcbsNotificationQueue
-      #       - name: requestedFileQueue
-      #         jndi: jms/requestedFileQueue
-      #         subdeployment: requestedFileQueue
-      #       - name: IcbsTransactionReverseQueue
-      #         jndi: jms/IcbsTransactionReverseQueue
-      #         subdeployment: IcbsTransactionReverseQueue
-      #       - name: amountLimitMassConfigQueue
-      #         jndi: jms/amountLimitMassConfigQueue
-      #         subdeployment: amountLimitMassConfigQueue
-      #       - name: dataStorageQueue
-      #         jndi: jms/dataStorageQueue
-      #         subdeployment: dataStorageQueue
-      #       - name: AsyncProccQueue
-      #         jndi: jms/AsyncProccQueue
-      #         subdeployment: AsyncProccQueue
-      #       - name: loggerTX_T
-      #         jndi: jms/PackageReceivedQueueT
-      #         subdeployment: loggerTX_T
-      #       - name: authTxQueue
-      #         jndi: jms/authTxQueue
-      #         subdeployment: authTxQueue
-      #     saf:
-      #       error_handling:
-      #         name: SAF_ICBS_FO_Error_Handling
-      #         policy: Always-Forward
-      #       remote_contexts:
-      #         - name: SAF_ICBS_FO_Remote_Context
-      #           bank:
-      #             bbta:
-      #               url: t3://10.0.2.47:8001
-      #             bpop:
-      #               url: t3://localhost:8001
-      #             bavv:
-      #               url: t3://localhost:8001
-      #             bocc:
-      #               url: t3://localhost:8001
-      #           username: weblogic 
-      #           password: P@ssw0rd
-      #           imported_destinations:
-      #             - name: SAF_ICBS_FO_Imported_Destination
-      #               queues:
-      #                 - name: IcbsNotificationQueue
-      #                   jndi: jms/IcbsNotificationQueue
-      # - name: OP
-      #   resources:
-      #     connection_factories:
-      #       - name: TheConnectionFactory
-      #         jndi: jms/TheConnectionFactory
-      #       - name: IcbsAlertConnectionFactory
-      #         jndi: jms/IcbsAlertConnectionFactory
-      #       - name: IcbsNotificationConnectionFactory
-      #         jndi: jms/IcbsNotificationConnectionFactory
-      #       - name: IcbsTransactionReverseConnectionFactory
-      #         jndi: jms/IcbsTransactionReverseConnectionFactory
-      #       - name: IcbsTransactionTimeoutRetryConnectionFactory
-      #         jndi: jms/IcbsTransactionTimeoutRetryConnectionFactory
-      #       - name: RequestedFileConnectionFactory
-      #         jndi: jms/RequestedFileConnectionFactory
-      #       - name: RequestedSyncFileConnectionFactory
-      #         jndi: jms/RequestedSyncFileConnectionFactory
-      #       - name: IcbsUpdateSegmentConnectionFactory
-      #         jndi: jms/IcbsUpdateSegmentConnectionFactory
-      #       - name: AuthTxConnectionFactory
-      #         jndi: jms/AuthTxConnectionFactory
-      #     distributed_queues:
-      #       - name: PackageReceivedQueue
-      #         jndi: jms/PackageReceivedQueue
-      #         subdeployment: PackageReceivedQueue
-      #       - name: IcbsAlertQueue
-      #         jndi: jms/IcbsAlertQueue
-      #         subdeployment: IcbsAlertQueue
-      #       - name: fileManagerQueue
-      #         jndi: jms/fileManagerQueue
-      #         subdeployment: fileManagerQueue
-      #       - name: IcbsNotificationQueue
-      #         jndi: jms/IcbsNotificationQueue
-      #         subdeployment: IcbsNotificationQueue
-      #       - name: requestedFileQueue
-      #         jndi: jms/requestedFileQueue
-      #         subdeployment: requestedFileQueue
-      #       - name: dataStorageQueue
-      #         jndi: jms/dataStorageQueue
-      #         subdeployment: dataStorageQueue
-      #       - name: IcbsTransactionReverseQueue
-      #         jndi: jms/IcbsTransactionReverseQueue
-      #         subdeployment: IcbsTransactionReverseQueue
-      #       - name: IcbsTransactionTimeoutRetryQueue
-      #         jndi: jms/IcbsTransactionTimeoutRetryQueue
-      #         subdeployment: IcbsTransactionTimeoutRetryQueue
-      #       - name: loggerTX_T
-      #         jndi: jms/PackageReceivedQueueT
-      #         subdeployment: loggerTX_T
-      #       - name: requestedSyncFileQueue
-      #         jndi: jms/requestedSyncFileQueue
-      #         subdeployment: requestedSyncFileQueue
-      #       - name: IcbsUpdateSegmentQueue
-      #         jndi: jms/IcbsUpdateSegmentQueue
-      #         subdeployment: IcbsUpdateSegmentQueue
-      #       - name: authTxQueue
-      #         jndi: jms/authTxQueue
-      #         subdeployment: authTxQueue
+  admin_url: t3://192.168.1.23:7001
+  datasources:
+    - name: excelsysdb
+      jndi: jdbc/excelsysdb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: icbsdb
+      jndi: jdbc/icbsdb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: icbsLoggerdb
+      jndi: jdbc/icbsLoggerdb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: excelsysLoggerdb
+      jndi: jdbc/excelsysLoggerdb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: excelsysLoggerHistorydb
+      jndi: jdbc/excelsysLoggerHistorydb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: excelsysQuartzdb
+      jndi: jdbc/excelsysQuartzdb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: icbsLoggerHistorydb
+      jndi: jdbc/icbsLoggerHistorydb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+    - name: LoggerTJndiDataSource
+      jndi: jdbc/excelsysLoggerTdb
+      host: 10.0.0.95
+      port: 1521
+      service:
+        prefix: ''
+        sufix: _TX
+      username:
+        prefix: ICBS
+        sufix: _EC78
+      password:
+        prefix: ICBS
+        sufix: _EC78
+  jms:
+    modules:
+      - name: FO
+        resources:
+          destination_key:
+            name: LoggerDestinationKey
+            property: JMSPriority
+            type: Int
+            order: Ascending
+          connection_factories:
+            - name: TheConnectionFactory
+              jndi: jms/TheConnectionFactory
+            - name: IcbsAlertConnectionFactory
+              jndi: jms/IcbsAlertConnectionFactory
+            - name: IcbsNotificationConnectionFactory
+              jndi: jms/IcbsNotificationConnectionFactory
+            - name: IcbsTransactionReverseConnectionFactory
+              jndi: jms/IcbsTransactionReverseConnectionFactory
+            - name: IcbsTransactionTimeoutRetryConnectionFactory
+              jndi: jms/IcbsTransactionTimeoutRetryConnectionFactory
+            - name: RequestedFileConnectionFactory
+              jndi: jms/RequestedFileConnectionFactory
+            - name: AsyncProccConnectionFactory
+              jndi: jms/AsyncProccConnectionFactory
+            - name: IcbsDispersionFundsFactory
+              jndi: jms/IcbsDispersionFundsFactory
+            - name: RequestedSyncFileConnectionFactory
+              jndi: jms/RequestedSyncFileConnectionFactory
+            - name: AuthTxConnectionFactory
+              jndi: jms/AuthTxConnectionFactory
+          distributed_queues:
+            - name: PackageReceivedQueue
+              jndi: jms/PackageReceivedQueue
+              subdeployment: PackageReceivedQueue
+            - name: IcbsAlertQueue
+              jndi: jms/IcbsAlertQueue
+              subdeployment: IcbsAlertQueue
+            - name: fileManagerQueue
+              jndi: jms/fileManagerQueue
+              subdeployment: fileManagerQueue
+            - name: IcbsNotificationQueue
+              jndi: jms/IcbsNotificationQueue
+              subdeployment: IcbsNotificationQueue
+            - name: requestedFileQueue
+              jndi: jms/requestedFileQueue
+              subdeployment: requestedFileQueue
+            - name: IcbsTransactionReverseQueue
+              jndi: jms/IcbsTransactionReverseQueue
+              subdeployment: IcbsTransactionReverseQueue
+            - name: IcbsTransactionTimeoutRetryQueue
+              jndi: jms/IcbsTransactionTimeoutRetryQueue
+              subdeployment: IcbsTransactionTimeoutRetryQueue
+            - name: SendFileToHostQueue
+              jndi: jms/SendFileToHostQueue
+              subdeployment: SendFileToHostQueue
+            - name: AsyncProccQueue
+              jndi: jms/AsyncProccQueue
+              subdeployment: AsyncProccQueue
+            - name: SendProductsDispersionFundsQueue
+              jndi: jms/SendProductsDispersionFundsQueue
+              subdeployment: SendProductsDispersionFundsQueue
+            - name: loggerTX_T
+              jndi: jms/PackageReceivedQueueT
+              subdeployment: loggerTX_T
+            - name: authTxQueue
+              jndi: jms/authTxQueue
+              subdeployment: authTxQueue
+          saf:
+            error_handling:
+              name: SAF_ICBS_Error_Handling
+              policy: Always-Forward
+            remote_contexts:
+              - name: SAF_ICBS_FM_Remote_Context
+                bank:
+                  bbta:
+                    url: t3://10.0.2.45:8001
+                  bpop:
+                    url: t3://localhost:8001
+                  bavv:
+                    url: t3://localhost:8001
+                  bocc:
+                    url: t3://localhost:8001
+                username: weblogic
+                password: P@ssw0rd
+                imported_destinations:
+                  - name: SAF_ICBS_FM_Imported_Destination
+                    queues:
+                      - name: dataStorageQueue
+                        jndi: jms/dataStorageQueue
+              - name: SAF_ICBS_OP_Remote_Context
+                bank:
+                  bbta:
+                    url: t3://10.0.2.46:8001
+                  bpop:
+                    url: t3://localhost:8001
+                  bavv:
+                    url: t3://localhost:8001
+                  bocc:
+                    url: t3://localhost:8001
+                username: weblogic 
+                password: P@ssw0rd
+                imported_destinations:
+                  - name: SAF_ICBS_OP_Imported_Destination
+                    queues:
+                      - name: IcbsTransactionReverseQueue
+                        jndi: jms/IcbsTransactionReverseQueue
+                      - name: requestedSyncFileQueue
+                        jndi: jms/requestedSyncFileQueue
+      - name: BO
+        resources:
+          destination_key:
+            name: LoggerDestinationKey
+            property: JMSPriority
+            type: Int
+            order: Ascending
+          connection_factories:
+            - name: TheConnectionFactory
+              jndi: jms/TheConnectionFactory
+            - name: IcbsAlertConnectionFactory
+              jndi: jms/IcbsAlertConnectionFactory
+            - name: IcbsNotificationConnectionFactory
+              jndi: jms/IcbsNotificationConnectionFactory
+            - name: IcbsTransactionReverseConnectionFactory
+              jndi: jms/IcbsTransactionReverseConnectionFactory
+            - name: RequestedFileConnectionFactory
+              jndi: jms/RequestedFileConnectionFactory
+            - name: IcbsDispersionFundsFactory
+              jndi: jms/IcbsDispersionFundsFactory
+            - name: AsyncProccConnectionFactory
+              jndi: jms/AsyncProccConnectionFactory
+            - name: AuthTxConnectionFactory
+              jndi: jms/AuthTxConnectionFactory
+          distributed_queues:
+            - name: PackageReceivedQueue
+              jndi: jms/PackageReceivedQueue
+              subdeployment: PackageReceivedQueue
+            - name: IcbsAlertQueue
+              jndi: jms/IcbsAlertQueue
+              subdeployment: IcbsAlertQueue
+            - name: fileManagerQueue
+              jndi: jms/fileManagerQueue
+              subdeployment: fileManagerQueue
+            - name: IcbsNotificationQueue
+              jndi: jms/IcbsNotificationQueue
+              subdeployment: IcbsNotificationQueue
+            - name: requestedFileQueue
+              jndi: jms/requestedFileQueue
+              subdeployment: requestedFileQueue
+            - name: dataStorageQueue
+              jndi: jms/dataStorageQueue
+              subdeployment: dataStorageQueue
+            - name: IcbsTransactionReverseQueue
+              jndi: jms/IcbsTransactionReverseQueue
+              subdeployment: IcbsTransactionReverseQueue
+            - name: SendProductsDispersionFundsQueue
+              jndi: jms/SendProductsDispersionFundsQueue
+              subdeployment: SendProductsDispersionFundsQueue
+            - name: AsyncProccQueue
+              jndi: jms/AsyncProccQueue
+              subdeployment: AsyncProccQueue
+            - name: loggerTX_T
+              jndi: jms/PackageReceivedQueueT
+              subdeployment: loggerTX_T
+            - name: authTxQueue
+              jndi: jms/authTxQueue
+              subdeployment: authTxQueue
+      - name: FM
+        resources:
+          connection_factories:
+            - name: TheConnectionFactory
+              jndi: jms/TheConnectionFactory
+            - name: IcbsAlertConnectionFactory
+              jndi: jms/IcbsAlertConnectionFactory
+            - name: IcbsNotificationConnectionFactory
+              jndi: jms/IcbsNotificationConnectionFactory
+            - name: IcbsTransactionReverseConnectionFactory
+              jndi: jms/IcbsTransactionReverseConnectionFactory
+            - name: RequestedFileConnectionFactory
+              jndi: jms/RequestedFileConnectionFactory
+            - name: AsyncProccConnectionFactory
+              jndi: jms/AsyncProccConnectionFactory
+            - name: AuthTxConnectionFactory
+              jndi: jms/AuthTxConnectionFactory
+          distributed_queues:
+            - name: PackageReceivedQueue
+              jndi: jms/PackageReceivedQueue
+              subdeployment: PackageReceivedQueue
+            - name: IcbsAlertQueue
+              jndi: jms/IcbsAlertQueue
+              subdeployment: IcbsAlertQueue
+            - name: fileManagerQueue
+              jndi: jms/fileManagerQueue
+              subdeployment: fileManagerQueue
+            - name: IcbsNotificationQueue
+              jndi: jms/IcbsNotificationQueue
+              subdeployment: IcbsNotificationQueue
+            - name: requestedFileQueue
+              jndi: jms/requestedFileQueue
+              subdeployment: requestedFileQueue
+            - name: IcbsTransactionReverseQueue
+              jndi: jms/IcbsTransactionReverseQueue
+              subdeployment: IcbsTransactionReverseQueue
+            - name: amountLimitMassConfigQueue
+              jndi: jms/amountLimitMassConfigQueue
+              subdeployment: amountLimitMassConfigQueue
+            - name: dataStorageQueue
+              jndi: jms/dataStorageQueue
+              subdeployment: dataStorageQueue
+            - name: AsyncProccQueue
+              jndi: jms/AsyncProccQueue
+              subdeployment: AsyncProccQueue
+            - name: loggerTX_T
+              jndi: jms/PackageReceivedQueueT
+              subdeployment: loggerTX_T
+            - name: authTxQueue
+              jndi: jms/authTxQueue
+              subdeployment: authTxQueue
+          saf:
+            error_handling:
+              name: SAF_ICBS_FO_Error_Handling
+              policy: Always-Forward
+            remote_contexts:
+              - name: SAF_ICBS_FO_Remote_Context
+                bank:
+                  bbta:
+                    url: t3://10.0.2.47:8001
+                  bpop:
+                    url: t3://localhost:8001
+                  bavv:
+                    url: t3://localhost:8001
+                  bocc:
+                    url: t3://localhost:8001
+                username: weblogic 
+                password: P@ssw0rd
+                imported_destinations:
+                  - name: SAF_ICBS_FO_Imported_Destination
+                    queues:
+                      - name: IcbsNotificationQueue
+                        jndi: jms/IcbsNotificationQueue
+      - name: OP
+        resources:
+          connection_factories:
+            - name: TheConnectionFactory
+              jndi: jms/TheConnectionFactory
+            - name: IcbsAlertConnectionFactory
+              jndi: jms/IcbsAlertConnectionFactory
+            - name: IcbsNotificationConnectionFactory
+              jndi: jms/IcbsNotificationConnectionFactory
+            - name: IcbsTransactionReverseConnectionFactory
+              jndi: jms/IcbsTransactionReverseConnectionFactory
+            - name: IcbsTransactionTimeoutRetryConnectionFactory
+              jndi: jms/IcbsTransactionTimeoutRetryConnectionFactory
+            - name: RequestedFileConnectionFactory
+              jndi: jms/RequestedFileConnectionFactory
+            - name: RequestedSyncFileConnectionFactory
+              jndi: jms/RequestedSyncFileConnectionFactory
+            - name: IcbsUpdateSegmentConnectionFactory
+              jndi: jms/IcbsUpdateSegmentConnectionFactory
+            - name: AuthTxConnectionFactory
+              jndi: jms/AuthTxConnectionFactory
+          distributed_queues:
+            - name: PackageReceivedQueue
+              jndi: jms/PackageReceivedQueue
+              subdeployment: PackageReceivedQueue
+            - name: IcbsAlertQueue
+              jndi: jms/IcbsAlertQueue
+              subdeployment: IcbsAlertQueue
+            - name: fileManagerQueue
+              jndi: jms/fileManagerQueue
+              subdeployment: fileManagerQueue
+            - name: IcbsNotificationQueue
+              jndi: jms/IcbsNotificationQueue
+              subdeployment: IcbsNotificationQueue
+            - name: requestedFileQueue
+              jndi: jms/requestedFileQueue
+              subdeployment: requestedFileQueue
+            - name: dataStorageQueue
+              jndi: jms/dataStorageQueue
+              subdeployment: dataStorageQueue
+            - name: IcbsTransactionReverseQueue
+              jndi: jms/IcbsTransactionReverseQueue
+              subdeployment: IcbsTransactionReverseQueue
+            - name: IcbsTransactionTimeoutRetryQueue
+              jndi: jms/IcbsTransactionTimeoutRetryQueue
+              subdeployment: IcbsTransactionTimeoutRetryQueue
+            - name: loggerTX_T
+              jndi: jms/PackageReceivedQueueT
+              subdeployment: loggerTX_T
+            - name: requestedSyncFileQueue
+              jndi: jms/requestedSyncFileQueue
+              subdeployment: requestedSyncFileQueue
+            - name: IcbsUpdateSegmentQueue
+              jndi: jms/IcbsUpdateSegmentQueue
+              subdeployment: IcbsUpdateSegmentQueue
+            - name: authTxQueue
+              jndi: jms/authTxQueue
+              subdeployment: authTxQueue
