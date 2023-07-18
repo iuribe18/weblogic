@@ -40,7 +40,7 @@
 
 - name: Descargando el instalador de Java
   copy:
-    src: /home/osboxes/Documentos/ansible/{{ java_version }}
+    src: /home/osboxes/Descargas/ansible/{{ java_version }}
     dest: "{{ weblogic.product.support }}/"
     owner: "{{ weblogic.system.user.name }}"
     group: "{{ weblogic.system.user.group }}"
@@ -48,7 +48,7 @@
 
 - name: Descargando WebLogic v12.1.3.0.0
   copy:
-    src: /home/osboxes/Documentos/ansible/{{ weblogic_version }}
+    src: /home/osboxes/Descargas/ansible/{{ weblogic_version }}
     dest: "{{ weblogic.product.support }}/"
     owner: "{{ weblogic.system.user.name }}"
     group: "{{ weblogic.system.user.group }}"
@@ -56,7 +56,7 @@
 
 - name: Descargando WebLogic v14.1.1.0.0
   copy:
-    src: /home/osboxes/Documentos/ansible/fmw_14.1.1.0.0_wls.jar
+    src: /home/osboxes/Descargas/ansible/fmw_14.1.1.0.0_wls.jar
     dest: "{{ weblogic.product.support }}/"
     owner: "{{ weblogic.system.user.name }}"
     group: "{{ weblogic.system.user.group }}"
