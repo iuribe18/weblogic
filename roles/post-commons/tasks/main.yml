@@ -31,15 +31,15 @@
   when:
     - inventory_hostname == "adminserver"
 
-- name: Montar NFS
-  mount:
-    src: "{{ hostvars['adminserver']['ansible_host'] }}:/icbs/{{ hostvars[inventory_hostname]['machine']['bank'] }}/config"
-    path: /icbs/config
-    opts: defaults
-    state: mounted
-    fstype: nfs
-  when:
-    - inventory_hostname != "adminserver"
+# - name: Montar NFS
+#   mount:
+#     src: "{{ hostvars['adminserver']['ansible_host'] }}:/icbs/{{ hostvars[inventory_hostname]['machine']['bank'] }}/config"
+#     path: /icbs/config
+#     opts: defaults
+#     state: mounted
+#     fstype: nfs
+#   when:
+#     - inventory_hostname != "adminserver"
 
 - name: Iniciar servicio nodemanager
   systemd:
