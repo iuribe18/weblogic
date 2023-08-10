@@ -7,12 +7,20 @@
     group: "{{ weblogic.system.user.group }}"
     mode: 0754
 
+# - name: Instalando msttcore-fonts
+#   yum:
+#     name: "{{ msstcore_fonts }}"
+#     state: present
+#   when:
+#     - inventory_hostname != "adminserver"
+
 - name: Instalando msttcore-fonts
   yum:
-    name: "{{ msstcore_fonts }}"
+    name: "/home/oracle/{{ msstcore_fonts }}"
     state: present
   when:
     - inventory_hostname != "adminserver"
+
 
 - name: export properties
   template:
