@@ -1,11 +1,11 @@
 ---
-# - hosts: '{{ server }}'
-#   gather_facts: no
-#   any_errors_fatal: yes
-#   roles: 
-#     - role: commons
-#       vars:
-#         ansible_user: root
+- hosts: '{{ server }}'
+  gather_facts: no
+  any_errors_fatal: yes
+  roles: 
+    - role: commons
+      vars:
+        ansible_user: root
 
 - hosts: '{{ server }}'
   gather_facts: no
@@ -13,35 +13,35 @@
   roles: 
     - weblogic-base
 
-# - hosts: '{{ server }}'
-#   gather_facts: no
-#   any_errors_fatal: yes
-#   roles: 
-#     - weblogic-domain
+- hosts: '{{ server }}'
+  gather_facts: no
+  any_errors_fatal: yes
+  roles: 
+    - weblogic-domain
 
-# - hosts: '{{ server }}'
-#   gather_facts: no
-#   any_errors_fatal: yes
-#   serial: 1
-#   roles:
-#     - weblogic-enroll
+- hosts: '{{ server }}'
+  gather_facts: no
+  any_errors_fatal: yes
+  serial: 1
+  roles:
+    - weblogic-enroll
 
-# - hosts: '{{ server }}'
-#   gather_facts: no
-#   any_errors_fatal: yes
-#   tasks:
-#     - import_role: 
-#         name: weblogic-domain-servers
-#         allow_duplicates: false
+- hosts: '{{ server }}'
+  gather_facts: no
+  any_errors_fatal: yes
+  tasks:
+    - import_role: 
+        name: weblogic-domain-servers
+        allow_duplicates: false
 
-# - hosts: '{{ server }}'
-#   gather_facts: no
-#   roles: 
-#     - icbs-domain-environment
+- hosts: '{{ server }}'
+  gather_facts: no
+  roles: 
+    - icbs-domain-environment
 
-# - hosts: '{{ server }}'
-#   gather_facts: no
-#   roles: 
-#     - role: post-commons
-#       vars:
-#         ansible_user: root
+- hosts: '{{ server }}'
+  gather_facts: no
+  roles: 
+    - role: post-commons
+      vars:
+        ansible_user: root

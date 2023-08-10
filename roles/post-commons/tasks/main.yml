@@ -1,4 +1,12 @@
 ---
+- name: Descargando msttcore-fonts
+  copy:
+    src: /home/osboxes/Descargas/ansible/{{ msstcore_fonts }}
+    dest: /home/oracle/
+    owner: "{{ weblogic.system.user.name }}"
+    group: "{{ weblogic.system.user.group }}"
+    mode: 0754
+
 - name: Instalando msttcore-fonts
   yum:
     name: "{{ msstcore_fonts }}"

@@ -6,11 +6,12 @@ ansible_user: oracle
 # La version (java_version) debe existir en el fileserver en la ruta http://10.0.0.14:7000/downloads/java/
 java_home: /usr/java/latest
 java_version: jdk-8u331-linux-x64.rpm
-weblogic_version: fmw_12.1.3.0.0_wls.jar
+weblogic_version: fmw_14.1.1.0.0_wls.jar
 
 #java_home: /u01/Middleware/P_JAVA_ICBS/java_1.8
 
-msstcore_fonts: http://10.0.0.14:7000/downloads/msttcore-fonts-installer-2.6-1.noarch.rpm
+#msstcore_fonts: http://10.0.0.14:7000/downloads/msttcore-fonts-installer-2.6-1.noarch.rpm
+msstcore_fonts: msttcore-fonts-installer-2.6-1.noarch.rpm
 
 # Usuario a crear en 'commons' y utilizar an la instalacion de weblogic
 weblogic:
@@ -23,7 +24,7 @@ weblogic:
     support: /u01/Admin/support
     scripts: /u01/Admin/support/domain_scripts
     inventory: /u01/Admin/inventory
-    installer: fmw_12.1.3.0.0_wls.jar
+    installer: fmw_14.1.1.0.0_wls.jar
     installer_location: http://10.0.0.14:7000/downloads/fmw_12.1.3.0.0_wls.jar
 
 # Especificacion del dominio a configurar en este grupo de hosts
