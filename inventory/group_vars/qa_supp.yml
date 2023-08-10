@@ -6,7 +6,10 @@ ansible_user: oracle
 # La version (java_version) debe existir en el fileserver en la ruta http://10.0.0.14:7000/downloads/java/
 java_home: /usr/java/latest
 java_version: jdk-8u331-linux-x64.rpm
-weblogic_version: fmw_14.1.1.0.0_wls.jar
+weblogic_version: fmw_12.1.3.0.0_wls.jar
+#weblogic_version: fmw_12.2.1.3.0_wls.jar
+#weblogic_version: fmw_12.2.1.4.0_wls.jar
+#weblogic_version: fmw_14.1.1.0.0_wls.jar
 
 #java_home: /u01/Middleware/P_JAVA_ICBS/java_1.8
 
@@ -24,8 +27,11 @@ weblogic:
     support: /u01/Admin/support
     scripts: /u01/Admin/support/domain_scripts
     inventory: /u01/Admin/inventory
-    installer: fmw_14.1.1.0.0_wls.jar
-    installer_location: http://10.0.0.14:7000/downloads/fmw_12.1.3.0.0_wls.jar
+    installer: fmw_12.1.3.0.0_wls.jar
+    #installer: fmw_12.2.1.3.0_wls.jar
+    #installer: fmw_12.2.1.4.0_wls.jar
+    #installer: fmw_14.1.1.0.0_wls.jar
+    #installer_location: http://10.0.0.14:7000/downloads/fmw_12.1.3.0.0_wls.jar
 
 # Especificacion del dominio a configurar en este grupo de hosts
 domain_spec:
@@ -34,7 +40,7 @@ domain_spec:
   username: weblogic
   password: P@ssw0rd
   recreate: true
-  admin_url: t3://192.168.1.23:7001
+  admin_url: t3://192.168.1.18:7001
   datasources:
     - name: excelsysdb
       jndi: jdbc/excelsysdb
